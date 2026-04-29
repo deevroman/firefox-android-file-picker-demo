@@ -1,0 +1,28 @@
+<html>
+<meta name="viewport" content="width=device-width">
+<body>
+
+Input without accept: <input id="outputWithoutAccept" type="file"><br><br>
+Input with accept="image/*": <input id="outputImageStar" type="file" accept="image/*"><br><br>
+
+<output id="output" style="white-space: pre"></output>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+
+<script>
+    function onChange(e) {
+        const fr = new FileReader()
+        fr.onload = async function () {
+            const metadata = EXIF.readFromBinaryFile(await e.target.files[0].arrayBuffer())
+
+            window.output.textContent = `GPSLatitude: ${metadata.GPSLatitude} GPSLongitude: ${metadata.GPSLongitude}\n`
+            window.output.textContent += "Metadata from EXIF" + JSON.stringify(metadata, null, 2)
+        }
+        fr.readAsDataURL(e.target.files[0])
+    }
+
+    window.outputWithoutAccept.onchange = onChange
+    window.outputImageStar.onchange = onChange
+</script>
+</html>
